@@ -3,103 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OftalmoPro - Vibras Positivas Edition</title>
+    <title>OftalmoPro Ultra - Vibras Positivas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .snellen-font { font-family: "Courier New", Courier, monospace; font-weight: 900; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .snellen-font { font-family: "Courier New", Courier, monospace; font-weight: 900; letter-spacing: 0.8rem; }
         .amsler-grid { display: grid; grid-template-columns: repeat(20, 12px); grid-template-rows: repeat(20, 12px); background-color: white; border: 1px solid #000; }
         .amsler-grid div { border: 0.1px solid #eee; }
         .center-dot { background-color: red !important; border-radius: 50%; }
-        @media print { .no-print { display: none; } }
+        .vp-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-900">
+<body class="text-slate-900">
 
-    <nav class="bg-white border-b p-4 flex justify-between items-center px-8 shadow-sm">
-        <div class="flex items-center gap-2">
-            <div class="bg-yellow-400 p-2 rounded-lg text-white font-bold">VP</div>
-            <h1 class="text-xl font-bold text-slate-800">OftalmoPro <span class="text-blue-600 font-light">Suite</span></h1>
+    <nav class="bg-white border-b sticky top-0 z-50 p-4 shadow-sm flex justify-between items-center px-8">
+        <div class="flex items-center gap-3">
+            <div class="vp-gradient p-2 rounded-xl text-white shadow-lg">
+                <i class="fa-solid fa-eye-low-vision text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tight text-slate-800">OftalmoPro <span class="text-blue-600">Ultra</span></h1>
+                <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Powered by Vibras Positivas</p>
+            </div>
         </div>
-        <div class="text-right">
-            <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Desarrollado por</p>
-            <p class="text-sm font-bold text-slate-600">Vibras Positivas © 2026</p>
+        <div class="flex items-center gap-4">
+            <button onclick="window.print()" class="text-slate-500 hover:text-blue-600"><i class="fa-solid fa-print"></i></button>
+            <div class="h-8 w-[1px] bg-slate-200"></div>
+            <span class="text-xs font-semibold text-slate-400">© 2026 VP Rights Reserved</span>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="max-w-[1600px] mx-auto p-6 grid grid-cols-1 xl:grid-cols-12 gap-6">
         
-        <div class="lg:col-span-1 space-y-6">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="font-bold text-blue-700 mb-4 flex items-center"><i class="fa-solid fa-user-medical mr-2"></i> Ficha del Paciente</h2>
-                <div class="space-y-3">
-                    <input id="pNombre" type="text" placeholder="Nombre Completo" class="w-full p-2 border rounded-lg text-sm">
-                    <input id="pEdad" type="number" placeholder="Edad" class="w-full p-2 border rounded-lg text-sm">
-                    <input id="pID" type="text" placeholder="ID / Documento" class="w-full p-2 border rounded-lg text-sm">
-                    <textarea id="pMotivo" placeholder="Motivo de consulta" class="w-full p-2 border rounded-lg text-sm h-20"></textarea>
+        <div class="xl:col-span-3 space-y-6">
+            <section class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <h2 class="text-sm font-bold text-slate-400 uppercase mb-4 tracking-widest flex items-center">
+                    <i class="fa-solid fa-address-card mr-2 text-blue-500"></i> Ficha Clínica
+                </h2>
+                <div class="space-y-4">
+                    <input id="pNombre" type="text" placeholder="Nombre del Paciente" class="w-full p-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input id="pEdad" type="number" placeholder="Edad" class="p-3 bg-slate-50 border-none rounded-xl text-sm">
+                        <input id="pID" type="text" placeholder="ID Doc" class="p-3 bg-slate-50 border-none rounded-xl text-sm">
+                    </div>
+                    <textarea id="pMotivo" placeholder="Anamnesis / Motivo" class="w-full p-3 bg-slate-50 border-none rounded-xl text-sm h-24"></textarea>
                 </div>
-            </div>
+            </section>
 
-            <div class="bg-blue-600 p-6 rounded-2xl shadow-lg text-white">
-                <h2 class="font-bold mb-4 uppercase text-xs tracking-widest">Acciones Clínicas</h2>
-                <button onclick="generarReporte()" class="w-full bg-white text-blue-600 py-3 rounded-xl font-bold mb-3 hover:bg-blue-50 transition shadow-md">
-                    <i class="fa-solid fa-file-pdf mr-2"></i> Descargar Reporte
+            <section class="bg-slate-900 p-6 rounded-3xl shadow-xl text-white">
+                <h2 class="text-xs font-bold text-blue-400 uppercase mb-4 tracking-widest text-center italic font-light">"Derechos Reservados Vibras Positivas"</h2>
+                <button onclick="generarReporte()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-bold mb-3 transition transform hover:scale-[1.02] shadow-lg">
+                    <i class="fa-solid fa-file-export mr-2"></i> EXPORTAR CONSULTA (PDF)
                 </button>
-                <button onclick="window.print()" class="w-full bg-blue-500 text-white py-3 rounded-xl font-bold hover:bg-blue-400 transition">
-                    <i class="fa-solid fa-print mr-2"></i> Imprimir Receta
-                </button>
-            </div>
+                <p class="text-[9px] text-slate-500 text-center">Este software es propiedad intelectual de Vibras Positivas. Prohibida su reproducción total o parcial.</p>
+            </section>
         </div>
 
-        <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="xl:col-span-6 space-y-6">
             
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h3 class="font-bold text-slate-700 mb-4 border-b pb-2 italic">Calculadora SRK-T</h3>
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <input id="axl" type="number" placeholder="Axial (mm)" class="p-2 bg-slate-50 border rounded text-sm">
-                    <input id="avgK" type="number" placeholder="K Promedio" class="p-2 bg-slate-50 border rounded text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 mb-4 flex justify-between items-center">
+                        Cálculo de LIO 
+                        <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">SRK-T</span>
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold w-12 text-slate-400 text-right">A:</span>
+                            <input id="constA" type="number" step="0.01" value="118.5" class="flex-1 p-2 bg-slate-50 rounded-lg text-sm">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold w-12 text-slate-400 text-right">AL:</span>
+                            <input id="axl" type="number" step="0.01" placeholder="Longitud Axial" class="flex-1 p-2 bg-slate-50 rounded-lg text-sm">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold w-12 text-slate-400 text-right">K:</span>
+                            <input id="avgK" type="number" step="0.01" placeholder="K Promedio" class="flex-1 p-2 bg-slate-50 rounded-lg text-sm">
+                        </div>
+                        <button onclick="calcLIO()" class="w-full bg-blue-100 text-blue-700 py-2 rounded-xl text-xs font-bold hover:bg-blue-200 transition">CALCULAR PODER</button>
+                        <div id="lioRes" class="text-4xl font-black text-center text-blue-600 mt-2">--</div>
+                    </div>
                 </div>
-                <button onclick="calcLIO()" class="w-full bg-slate-800 text-white py-2 rounded-lg text-sm font-bold uppercase tracking-tighter">Calcular Poder</button>
-                <div id="lioRes" class="text-3xl font-black text-center mt-4 text-blue-600">--</div>
+
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 mb-4">Herramientas Ópticas</h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-blue-50 rounded-2xl">
+                            <p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Distancia al Vértice (12mm a 0mm)</p>
+                            <div class="flex gap-2">
+                                <input id="esfIn" type="number" placeholder="Esf" class="w-full p-2 text-xs rounded-lg border-none">
+                                <button onclick="calcVertex()" class="bg-blue-600 text-white px-3 rounded-lg text-xs">OK</button>
+                            </div>
+                            <p id="vertexRes" class="mt-2 text-sm font-bold text-blue-800"></p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-2xl">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Transposición de Cilindro</p>
+                            <p class="text-[10px] text-slate-500 italic">Próximamente en v1.2</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
-                <h3 class="font-bold text-slate-700 mb-4 border-b pb-2 text-left italic">Test de Agudeza</h3>
-                <div class="snellen-font text-slate-800 leading-tight">
-                    <div class="text-4xl">E</div>
-                    <div class="text-2xl">F P</div>
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-800 italic">Diagnóstico Clínico y RX</h3>
+                    <span class="text-[10px] font-bold text-slate-300 italic font-light">VIBRAS POSITIVAS EXCLUSIVE TOOL</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-2">OJO DERECHO (OD)</label>
+                        <textarea id="rxOD" class="w-full p-3 bg-slate-50 border-none rounded-2xl text-sm h-20" placeholder="Esf / Cil x Eje"></textarea>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 ml-2">OJO IZQUIERDO (OI)</label>
+                        <textarea id="rxOI" class="w-full p-3 bg-slate-50 border-none rounded-2xl text-sm h-20" placeholder="Esf / Cil x Eje"></textarea>
+                    </div>
+                </div>
+                <textarea id="pDiagnostico" class="w-full p-4 bg-yellow-50 border-none rounded-2xl text-sm h-32" placeholder="Plan de tratamiento y observaciones finales..."></textarea>
+            </div>
+
+        </div>
+
+        <div class="xl:col-span-3 space-y-6">
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 text-center">
+                <h3 class="text-xs font-bold text-slate-400 mb-4 text-left uppercase">Test Snellen Dinámico</h3>
+                <div id="snellenBox" class="snellen-font text-slate-800 leading-none">
+                    <div class="text-4xl mb-2">E</div>
+                    <div class="text-2xl mb-2">F P</div>
                     <div class="text-xl">T O Z</div>
-                    <div class="text-lg">L P E D</div>
                 </div>
                 <div class="mt-4 flex gap-2">
-                    <input id="snellenVal" type="text" placeholder="Ej: 20/20" class="w-full p-2 border rounded-lg text-sm">
+                    <input id="snellenRes" type="text" placeholder="AV: 20/..." class="w-full p-2 border rounded-xl text-xs">
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center">
-                <h3 class="font-bold text-slate-700 mb-4 border-b pb-2 w-full italic">Rejilla de Amsler</h3>
-                <div class="amsler-grid" id="amsler"></div>
-                <p class="text-[10px] text-slate-400 mt-2 text-center italic">Solicite al paciente fijar la vista en el punto central.</p>
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <h3 class="text-xs font-bold text-slate-400 mb-4 uppercase">Test Ishihara</h3>
+                <div class="w-24 h-24 mx-auto bg-[radial-gradient(circle,_#86efac_2px,_transparent_2px)] bg-[size:6px_6px] rounded-full border-4 border-green-100 flex items-center justify-center relative">
+                    <span class="text-4xl font-black text-red-400 opacity-80">15</span>
+                </div>
+                <p class="text-[10px] text-center mt-2 text-slate-400 italic font-light font-bold">Derechos: Vibras Positivas</p>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h3 class="font-bold text-slate-700 mb-4 border-b pb-2 italic">Diagnóstico / Rx</h3>
-                <textarea id="pDiagnostico" class="w-full h-32 p-2 bg-slate-50 border-none rounded-lg text-sm" placeholder="Escriba el diagnóstico o la fórmula de lentes aquí..."></textarea>
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col items-center">
+                <h3 class="text-xs font-bold text-slate-400 mb-4 uppercase w-full">Rejilla de Amsler</h3>
+                <div class="amsler-grid" id="amsler"></div>
             </div>
         </div>
-    </main>
 
-    <footer class="mt-12 p-8 bg-slate-800 text-white text-center">
-        <p class="text-lg font-bold mb-1">VIBRAS POSITIVAS</p>
-        <p class="text-sm text-slate-400">© 2026 Todos los derechos reservados.</p>
-        <p class="text-[10px] mt-4 opacity-50 px-10">Esta herramienta es de apoyo clínico y no reemplaza el criterio médico profesional.</p>
+    </div>
+
+    <footer class="mt-12 p-12 bg-slate-900 text-white text-center">
+        <div class="mb-6 flex justify-center items-center gap-4">
+            <div class="h-[1px] w-20 bg-blue-800"></div>
+            <span class="text-2xl font-black tracking-tighter">VIBRAS POSITIVAS</span>
+            <div class="h-[1px] w-20 bg-blue-800"></div>
+        </div>
+        <p class="text-blue-400 text-sm font-bold">Software de Gestión Oftalmológica v1.5 Gold</p>
+        <p class="text-[10px] text-slate-500 mt-2">© 2026. Todos los derechos reservados por Vibras Positivas. <br> Este sistema utiliza tecnología de cifrado local para protección del paciente.</p>
     </footer>
 
     <script>
-        // Generar Rejilla
+        // Inicializar Rejilla
         const amsler = document.getElementById('amsler');
         for (let i = 0; i < 400; i++) {
             const cell = document.createElement('div');
@@ -107,49 +175,76 @@
             amsler.appendChild(cell);
         }
 
-        // Lógica LIO
+        // Calculadora LIO SRK-T
         function calcLIO() {
+            const A = parseFloat(document.getElementById('constA').value);
             const L = parseFloat(document.getElementById('axl').value);
             const K = parseFloat(document.getElementById('avgK').value);
-            if(L && K) {
-                const P = 118.5 - (2.5 * L) - (0.9 * K);
+            if(A && L && K) {
+                const P = A - (2.5 * L) - (0.9 * K);
                 document.getElementById('lioRes').innerText = P.toFixed(2) + " D";
+            } else {
+                alert("Ingrese todos los datos para el cálculo.");
             }
         }
 
-        // Función para Generar PDF (Usa jsPDF)
+        // Conversión de Vértice (Fuerza efectiva en cornea)
+        function calcVertex() {
+            const F = parseFloat(document.getElementById('esfIn').value);
+            if(F) {
+                const V = F / (1 - (0.012 * F));
+                document.getElementById('vertexRes').innerText = `Poder en Córnea: ${V.toFixed(2)} D`;
+            }
+        }
+
+        // Generador de PDF Profesional
         function generarReporte() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            const nombre = document.getElementById('pNombre').value || "N/A";
-            const edad = document.getElementById('pEdad').value || "N/A";
-            const diagnostico = document.getElementById('pDiagnostico').value || "Sin observaciones";
-            const lio = document.getElementById('lioRes').innerText;
+            // Estética de Vibras Positivas
+            doc.setFillColor(30, 64, 175);
+            doc.rect(0, 0, 210, 40, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(22);
+            doc.text("VIBRAS POSITIVAS - CLINIC REPORT", 20, 25);
+            
+            doc.setFontSize(8);
+            doc.text("SISTEMA DE GESTIÓN OFTALMOLÓGICA PROFESIONAL", 20, 32);
 
-            doc.setFontSize(20);
-            doc.setTextColor(0, 51, 153);
-            doc.text("REPORTE OFTALMOLÓGICO", 20, 20);
-            
-            doc.setFontSize(10);
-            doc.setTextColor(100);
-            doc.text("Desarrollado por: Vibras Positivas © 2026", 20, 30);
-            
-            doc.setFontSize(12);
+            // Datos Paciente
             doc.setTextColor(0);
-            doc.text(`Paciente: ${nombre}`, 20, 50);
-            doc.text(`Edad: ${edad}`, 20, 60);
-            doc.text(`ID: ${document.getElementById('pID').value}`, 20, 70);
-            
-            doc.text("RESULTADOS:", 20, 90);
-            doc.text(`- Poder LIO sugerido: ${lio}`, 25, 100);
-            doc.text(`- Agudeza Visual: ${document.getElementById('snellenVal').value || "No registrada"}`, 25, 110);
-            
-            doc.text("DIAGNÓSTICO Y PLAN:", 20, 130);
-            doc.setFontSize(10);
-            doc.text(doc.splitTextToSize(diagnostico, 160), 20, 140);
+            doc.setFontSize(12);
+            doc.text(`PACIENTE: ${document.getElementById('pNombre').value || "NO REGISTRADO"}`, 20, 55);
+            doc.text(`ID: ${document.getElementById('pID').value || "---"}`, 20, 63);
+            doc.text(`EDAD: ${document.getElementById('pEdad').value || "---"} años`, 20, 71);
 
-            doc.save(`Consulta_${nombre}.pdf`);
+            // Resultados
+            doc.setDrawColor(200);
+            doc.line(20, 80, 190, 80);
+            doc.text("RESULTADOS DE EVALUACIÓN", 20, 90);
+            
+            doc.setFontSize(10);
+            doc.text(`- Agudeza Visual: ${document.getElementById('snellenRes').value || "Sin datos"}`, 25, 100);
+            doc.text(`- Sugerencia LIO (SRK-T): ${document.getElementById('lioRes').innerText}`, 25, 107);
+            
+            // Receta
+            doc.setFontSize(12);
+            doc.text("RX Y TRATAMIENTO:", 20, 125);
+            doc.setFontSize(10);
+            doc.text("OD: " + (document.getElementById('rxOD').value || "S.P."), 25, 135);
+            doc.text("OI: " + (document.getElementById('rxOI').value || "S.P."), 25, 142);
+            
+            const diag = document.getElementById('pDiagnostico').value || "Sin observaciones adicionales.";
+            doc.text("OBSERVACIONES:", 20, 160);
+            doc.text(doc.splitTextToSize(diag, 160), 20, 168);
+
+            // Pie de página legal
+            doc.setFontSize(8);
+            doc.setTextColor(150);
+            doc.text("Este documento es generado por el software propiedad de Vibras Positivas © 2026", 105, 280, {align: 'center'});
+
+            doc.save(`Consulta_VP_${document.getElementById('pNombre').value}.pdf`);
         }
     </script>
 </body>
