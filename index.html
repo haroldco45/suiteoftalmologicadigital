@@ -3,102 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OftalmoTool - Suite Digital</title>
+    <title>OftalmoPro - Clinical Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .snellen-row { font-family: "Courier New", Courier, monospace; font-weight: bold; }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        body { font-family: 'Roboto', sans-serif; transition: background 0.3s; }
+        .snellen-font { font-family: "Courier New", Courier, monospace; font-weight: 900; letter-spacing: 0.5rem; }
+        .dark-mode { background-color: #1a202c; color: #e2e8f0; }
+        .dark-mode .bg-white { background-color: #2d3748; color: #edf2f7; }
         .amsler-grid {
             display: grid;
-            grid-template-columns: repeat(20, 20px);
-            grid-template-rows: repeat(20, 20px);
-            border: 1px solid #333;
+            grid-template-columns: repeat(20, 15px);
+            grid-template-rows: repeat(20, 15px);
+            border: 2px solid #333;
             background-color: white;
         }
-        .amsler-grid div { border: 0.5px solid #ccc; }
-        .center-dot { background-color: black; border-radius: 50%; }
+        .amsler-grid div { border: 0.1px solid #ddd; }
+        .center-dot { background-color: red !important; border-radius: 50%; scale: 1.5; }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen">
+<body class="bg-slate-50 text-slate-900 min-h-screen">
 
-    <nav class="bg-blue-700 text-white p-4 shadow-lg">
-        <h1 class="text-2xl font-bold text-center">OftalmoTool v1.0</h1>
+    <nav class="bg-indigo-700 text-white p-4 shadow-xl flex justify-between items-center px-8">
+        <h1 class="text-xl font-bold"><i class="fa-solid fa-eye mr-2"></i>OftalmoPro Suite</h1>
+        <button onclick="toggleDarkMode()" class="p-2 bg-indigo-600 rounded-full hover:bg-indigo-500 transition">
+            <i class="fa-solid fa-moon"></i>
+        </button>
     </nav>
 
-    <div class="max-w-4xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <div class="bg-white p-6 rounded-xl shadow-md">
-            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-600">Optotipo Snellen</h2>
-            <div id="snellen-board" class="bg-white border p-4 text-center flex flex-col items-center">
-                <div class="text-6xl snellen-row">E</div>
-                <div class="text-4xl snellen-row">F P</div>
-                <div class="text-3xl snellen-row">T O Z</div>
-                <div class="text-2xl snellen-row">L P E D</div>
+        <div class="space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="font-bold text-indigo-600 mb-4 uppercase text-sm tracking-wider">Optotipos Snellen</h2>
+                <div class="bg-white p-4 text-center rounded-lg border-2 border-slate-100 text-black">
+                    <div class="text-5xl snellen-font mb-2"> E </div>
+                    <div class="text-3xl snellen-font mb-2"> F P </div>
+                    <div class="text-2xl snellen-font mb-2"> T O Z </div>
+                    <div class="text-xl snellen-font"> L P E D </div>
+                </div>
             </div>
-            <p class="mt-4 text-xs text-gray-500 italic text-center">Ajustar zoom del navegador según distancia (6m estándar).</p>
-        </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md">
-            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-600">Calculadora LIO (SRK)</h2>
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-sm">Constante A:</label>
-                    <input id="constA" type="number" step="0.1" value="118.5" class="w-full border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-sm">K promedio (D):</label>
-                    <input id="avgK" type="number" step="0.1" placeholder="44.0" class="w-full border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-sm">Longitud Axial (mm):</label>
-                    <input id="axl" type="number" step="0.01" placeholder="23.5" class="w-full border p-2 rounded">
-                </div>
-                <button onclick="calcLIO()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Calcular</button>
-                <div id="lioResult" class="mt-2 font-bold text-center text-green-600"></div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="font-bold text-indigo-600 mb-4 uppercase text-sm tracking-wider">Conversor Agudeza</h2>
+                <input id="snellenIn" type="text" placeholder="Ej: 20/40" class="w-full p-2 border rounded mb-2 text-slate-800">
+                <button onclick="convertAV()" class="w-full bg-indigo-600 text-white py-2 rounded-lg font-bold">Convertir</button>
+                <div id="avRes" class="mt-3 text-sm space-y-1"></div>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center">
-            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-600 w-full text-left">Rejilla de Amsler</h2>
-            <div class="amsler-grid mb-4" id="amsler">
+        <div class="space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="font-bold text-indigo-600 mb-4 uppercase text-sm tracking-wider">Cálculo LIO (SRK-II)</h2>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <input id="constA" type="number" step="0.1" value="118.5" class="p-2 border rounded" placeholder="A">
+                    <input id="axl" type="number" step="0.01" class="p-2 border rounded" placeholder="Axial (mm)">
+                    <input id="k1" type="number" step="0.1" class="p-2 border rounded" placeholder="K1">
+                    <input id="k2" type="number" step="0.1" class="p-2 border rounded" placeholder="K2">
                 </div>
-            <p class="text-sm text-gray-600">Fije la vista en el punto central.</p>
+                <button onclick="calcLIO()" class="w-full mt-4 bg-emerald-600 text-white py-2 rounded-lg font-bold uppercase text-xs">Calcular Poder</button>
+                <p id="lioRes" class="text-center mt-3 text-xl font-bold text-emerald-600"></p>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 text-center">
+                <h2 class="font-bold text-indigo-600 mb-4 uppercase text-sm tracking-wider text-left">Rejilla de Amsler</h2>
+                <div class="amsler-grid mx-auto" id="amsler"></div>
+            </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md text-center">
-            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-600 text-left">Test de Ishihara Quick</h2>
-            <div id="ishihara-plate" class="w-32 h-32 rounded-full mx-auto bg-green-200 flex items-center justify-center border-4 border-green-500 mb-4">
-                <span class="text-4xl font-black text-red-500" style="text-shadow: 1px 1px 2px gray;">12</span>
+        <div class="space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="font-bold text-indigo-600 mb-4 uppercase text-sm tracking-wider">Test Daltonismo</h2>
+                <div class="relative w-32 h-32 mx-auto bg-orange-100 rounded-full flex items-center justify-center border-4 border-orange-200 overflow-hidden">
+                    <div class="absolute inset-0 opacity-40 bg-[radial-gradient(circle,_#ff0000_2px,_transparent_2px)] bg-[size:10px_10px]"></div>
+                    <span class="text-5xl font-black text-green-700 z-10">74</span>
+                </div>
+                <p class="text-center text-xs mt-4 text-slate-500 italic">Normal ve 74. Daltonismo puede ver 21 o nada.</p>
             </div>
-            <p class="text-sm">¿Qué número ve? <br><strong>Normal: 12</strong></p>
+
+            <div class="bg-indigo-900 text-white p-5 rounded-2xl shadow-lg">
+                <h2 class="font-bold mb-2 uppercase text-sm tracking-wider">Notas Rápidas</h2>
+                <textarea class="w-full bg-indigo-800 border-none rounded p-2 text-sm h-32" placeholder="Anotaciones de la consulta..."></textarea>
+            </div>
         </div>
 
     </div>
 
-    <footer class="text-center p-8 text-gray-400 text-sm">
-        Herramienta de apoyo no diagnóstica. <br>
-        Hecho para portafolio de GitHub.
-    </footer>
-
     <script>
-        // Lógica Calculadora LIO (Fórmula: P = A - 2.5L - 0.9K)
-        function calcLIO() {
-            const A = parseFloat(document.getElementById('constA').value);
-            const K = parseFloat(document.getElementById('avgK').value);
-            const L = parseFloat(document.getElementById('axl').value);
-            
-            if(K && L) {
-                const P = A - (2.5 * L) - (0.9 * K);
-                document.getElementById('lioResult').innerText = "Poder LIO: " + P.toFixed(2) + " D";
-            } else {
-                alert("Por favor completa los datos de K y Longitud Axial.");
+        // Lógica de Agudeza Visual
+        function convertAV() {
+            const val = document.getElementById('snellenIn').value; // Ej: 20/40
+            const parts = val.split('/');
+            if(parts.length === 2) {
+                const decimal = (parseInt(parts[0]) / parseInt(parts[1])).toFixed(2);
+                const logmar = Math.log10(1/decimal).toFixed(2);
+                document.getElementById('avRes').innerHTML = `
+                    <p><b>Decimal:</b> ${decimal}</p>
+                    <p><b>LogMAR:</b> ${logmar}</p>
+                `;
             }
         }
 
-        // Generar Rejilla de Amsler
+        // Lógica LIO Mejorada (Promediando Ks)
+        function calcLIO() {
+            const A = parseFloat(document.getElementById('constA').value);
+            const L = parseFloat(document.getElementById('axl').value);
+            const k1 = parseFloat(document.getElementById('k1').value);
+            const k2 = parseFloat(document.getElementById('k2').value);
+            
+            if(A && L && k1 && k2) {
+                const avgK = (k1 + k2) / 2;
+                const P = A - (2.5 * L) - (0.9 * avgK);
+                document.getElementById('lioRes').innerText = P.toFixed(2) + " D";
+            }
+        }
+
+        // Modo Oscuro
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Generar Rejilla
         const amsler = document.getElementById('amsler');
         for (let i = 0; i < 400; i++) {
             const cell = document.createElement('div');
-            if (i === 210) cell.classList.add('center-dot'); // Punto central aproximado
+            if (i === 210) cell.classList.add('center-dot');
             amsler.appendChild(cell);
         }
     </script>
